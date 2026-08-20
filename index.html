@@ -2,6 +2,11 @@
 <html>
 <head>
 <meta charset="utf-8">
+<title>部署図鑑マップ｜瓜生山学園</title>
+<meta name="description" content="瓜生山学園の部署を、建物と相談内容の2通りで探せる案内。窓口の電話・受付時間・場所つき。">
+<meta property="og:title" content="部署図鑑マップ｜瓜生山学園">
+<meta property="og:description" content="建物から、相談内容から。窓口の電話・受付時間・場所がすぐ分かる部署案内。">
+<meta property="og:type" content="website">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
 </head>
@@ -9,56 +14,68 @@
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@400;500;700&display=swap">
 <script src="./campus-data-2.js"></script>
 <style>
-html,body{margin:0;padding:0;background:#e8ebe6}
+html,body{margin:0;padding:0;background:#14171a;overflow:hidden}
 *{box-sizing:border-box}
 a{color:#2c6b5b;text-decoration:none}
-a:hover{color:#1d4d40}
+a:hover{color:#1d4d40;text-decoration:underline}
 ::selection{background:#cfe0d8}
-.cscroll::-webkit-scrollbar{width:8px;height:8px}
-.cscroll::-webkit-scrollbar-thumb{background:#c3cac1;border-radius:4px}
+.cscroll::-webkit-scrollbar{width:9px;height:9px}
+.cscroll::-webkit-scrollbar-thumb{background:#c6ccc3;border-radius:5px}
 .cscroll::-webkit-scrollbar-track{background:transparent}
+input::placeholder{color:#9aa39c}
 </style>
 </helmet>
-<div style="width:100%;height:100vh;min-height:700px;display:flex;flex-direction:column;background:#e8ebe6;font-family:'Zen Kaku Gothic New',sans-serif;color:#1b2027;overflow:hidden">
+<div ref="{{ appRef }}" style="width:100%;height:100vh;min-height:620px;display:flex;flex-direction:column;background:#f2f3ef;font-family:'Zen Kaku Gothic New',sans-serif;color:#14171a;overflow:hidden">
 
-  <header style="flex:0 0 auto;height:64px;background:#1b2027;display:flex;align-items:center;gap:20px;padding:0 22px">
-    <div style="display:flex;align-items:baseline;gap:11px;white-space:nowrap">
-      <span style="font-size:16px;font-weight:500;letter-spacing:.06em;color:#f2f4f0">瓜生山学園 KOBITO図鑑(仮)</span>
-      <span style="font-size:9.5px;letter-spacing:.2em;color:#8a958d">URYUYAMA CAMPUS GUIDE</span>
+  <header style="flex:0 0 auto;height:80px;background:#14171a;display:flex;align-items:center;gap:20px;padding:0 24px">
+    <div style="white-space:nowrap">
+      <div style="font-family:'Zen Old Mincho',serif;font-size:21px;font-weight:500;letter-spacing:.14em;color:#f4f5f1;line-height:1.2">部署図鑑マップ</div>
+      <div style="font-size:8.5px;letter-spacing:.22em;color:#68726b;margin-top:4px">URYUYAMA CAMPUS GUIDE</div>
     </div>
-    <div style="position:relative;margin-left:auto;width:min(440px,40vw)">
-      <input value="{{ q }}" onInput="{{ onSearch }}" placeholder="相談内容・部署名で検索（例：成績、アカウント、支払い）" style="width:100%;height:38px;padding:0 14px;border:1px solid #39424b;border-radius:3px;background:#242c35;color:#eef0ec;font:inherit;font-size:12.5px;outline:none" style-focus="border-color:#4e9c85;background:#2a333d">
+
+    <div style="flex:1 1 auto;display:flex;justify-content:center;min-width:0">
+      <div style="position:relative;width:100%;max-width:540px">
+        <span style="position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:15px;color:#7d867f;pointer-events:none">⌕</span>
+        <input value="{{ q }}" onInput="{{ onSearch }}" placeholder="相談内容・部署名で検索（例：成績確認願、アカウント、支払い）" style="width:100%;height:46px;padding:0 15px 0 38px;border:1px solid #f4f5f1;border-radius:3px;background:#f4f5f1;color:#14171a;font:inherit;font-size:13.5px;outline:none;box-shadow:0 2px 0 rgba(0,0,0,.35)" style-focus="border-color:#4e9c85;box-shadow:0 0 0 3px rgba(78,156,133,.35)">
+        <sc-if value="{{ searching }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ clearSearch }}" title="検索をやめる" style="position:absolute;right:9px;top:50%;transform:translateY(-50%);width:26px;height:26px;border:0;border-radius:2px;background:#e0e3dc;cursor:pointer;font:inherit;font-size:12px;color:#4a5550;line-height:1;padding:0">×</button>
+        </sc-if>
+      </div>
     </div>
-    <div style="font-size:10.5px;color:#8a958d;letter-spacing:.05em;white-space:nowrap">{{ totalLine }}</div>
+
+    <div style="display:flex;align-items:center;gap:14px;white-space:nowrap">
+      <button type="button" onClick="{{ toggleBig }}" style="{{ bigBtn }}">{{ bigLabel }}</button>
+      <span style="font-size:9.5px;color:#5e6862;letter-spacing:.06em">{{ totalLine }}</span>
+    </div>
   </header>
 
-  <div style="flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(200px,238px) minmax(0,1fr) minmax(252px,304px)">
+  <div style="flex:1 1 auto;min-height:0;display:flex;flex-direction:row">
 
-    <nav class="cscroll" style="border-right:1px solid #d3d9d1;background:#f1f3ef;overflow-y:auto">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #d3d9d1;position:sticky;top:0;background:#f1f3ef;z-index:2">
+    <nav class="cscroll" style="flex:0 0 228px;border-right:1px solid #dcdfd8;background:#eaece6;overflow-y:auto">
+      <div style="display:grid;grid-template-columns:1fr 1fr;position:sticky;top:0;background:#eaece6;z-index:2;border-bottom:1px solid #dcdfd8">
         <button type="button" onClick="{{ modeBuilding }}" style="{{ tabB }}">建物から</button>
         <button type="button" onClick="{{ modeTopic }}" style="{{ tabT }}">相談内容から</button>
       </div>
 
       <sc-if value="{{ isBuilding }}" hint-placeholder-val="{{ true }}">
-        <div style="padding:14px 0 18px">
-          <div style="padding:0 16px 9px;font-size:9.5px;letter-spacing:.18em;color:#8a958d">BUILDINGS ／ 7棟</div>
+        <div style="padding:16px 0 22px">
+          <div style="padding:0 16px 10px;font-size:9px;letter-spacing:.2em;color:#98a099">BUILDINGS</div>
           <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7">
             <button type="button" onClick="{{ r.onClick }}" style="{{ r.style }}">
               <span style="{{ r.chip }}">{{ r.code }}</span>
               <span style="flex:1;min-width:0">
-                <span style="display:block;font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
-                <span style="display:block;font-size:10px;color:#77837a;margin-top:2px">{{ r.meta }}</span>
+                <span style="display:block;font-size:13px;font-weight:500;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
+                <span style="display:block;font-size:9.5px;color:#7d867f;margin-top:3px">{{ r.meta }}</span>
               </span>
             </button>
           </sc-for>
-          <div style="margin:14px 16px 0;padding-top:12px;border-top:1px solid #dde2da">
-            <div style="font-size:9.5px;letter-spacing:.16em;color:#8a958d;margin-bottom:7px">所在地確認中</div>
+          <div style="margin:16px 16px 0;padding-top:13px;border-top:1px solid #d8dcd4">
+            <div style="font-size:9px;letter-spacing:.18em;color:#98a099;margin-bottom:8px">所在地確認中</div>
             <sc-for list="{{ unmapped }}" as="u" hint-placeholder-count="2">
-              <div style="display:flex;align-items:baseline;gap:7px;padding:4px 0;font-size:11.5px;color:#5d6a61">
+              <div style="display:flex;align-items:baseline;gap:7px;padding:3px 0;font-size:11.5px;color:#5b655e">
                 <span>{{ u.name }}</span>
                 <sc-if value="{{ u.hasUrl }}" hint-placeholder-val="{{ true }}">
                   <a href="{{ u.url }}" target="_blank" rel="noopener" style="margin-left:auto;font-size:10px;white-space:nowrap">図鑑 ↗</a>
@@ -70,17 +87,16 @@ a:hover{color:#1d4d40}
       </sc-if>
 
       <sc-if value="{{ isTopic }}" hint-placeholder-val="{{ false }}">
-        <div style="padding:14px 0 18px">
-          <div style="padding:0 16px 9px;font-size:9.5px;letter-spacing:.18em;color:#8a958d">TOPICS ／ 相談内容</div>
+        <div style="padding:16px 0 22px">
           <sc-for list="{{ topicCats }}" as="c" hint-placeholder-count="5">
-            <div style="margin-bottom:10px">
-              <div style="padding:6px 16px 4px;font-size:10px;font-weight:500;color:#5d6a61;letter-spacing:.06em;background:#eaeee8">{{ c.cat }}</div>
+            <div style="margin-bottom:6px">
+              <div style="padding:7px 16px 5px;font-family:'Zen Old Mincho',serif;font-size:12px;color:#4a5550;letter-spacing:.1em">{{ c.cat }}</div>
               <sc-for list="{{ c.items }}" as="t" hint-placeholder-count="5">
                 <button type="button" onClick="{{ t.onClick }}" style="{{ t.style }}">
                   <span style="flex:1;min-width:0">
                     <span style="display:block;font-size:12px;font-weight:500;letter-spacing:.01em">{{ t.label }}</span>
-                    <span style="display:block;font-size:9.5px;color:#77837a;margin-top:2px">{{ t.meta }}</span>
                   </span>
+                  <span style="font-size:9.5px;color:#98a099;white-space:nowrap">{{ t.meta }}</span>
                 </button>
               </sc-for>
             </div>
@@ -89,146 +105,151 @@ a:hover{color:#1d4d40}
       </sc-if>
     </nav>
 
-    <main class="cscroll" style="overflow-y:auto;padding:22px 28px 40px">
+    <main class="cscroll" style="flex:1 1 auto;min-width:0;overflow-y:auto">
 
       <sc-if value="{{ searching }}" hint-placeholder-val="{{ false }}">
-        <div>
-          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px">
-            <h2 style="margin:0;font-size:17px;font-weight:500;letter-spacing:.03em">検索結果</h2>
-            <span style="font-size:11.5px;color:#77837a">{{ resultCount }}</span>
-            <button type="button" onClick="{{ clearSearch }}" style="margin-left:auto;height:30px;padding:0 12px;border:1px solid #cbd2c8;border-radius:3px;background:#f6f8f4;cursor:pointer;font:inherit;font-size:11px;color:#3d4a41;white-space:nowrap">検索をやめる ×</button>
+        <div style="padding:26px 30px 44px">
+          <div style="display:flex;align-items:flex-end;gap:14px;padding-bottom:14px;border-bottom:2px solid #14171a">
+            <h2 style="margin:0;font-family:'Zen Old Mincho',serif;font-size:30px;font-weight:500;letter-spacing:.04em;line-height:1">検索結果</h2>
+            <span style="font-family:'Zen Old Mincho',serif;font-size:17px;color:#4a5550">{{ resultCount }}</span>
+            <button type="button" onClick="{{ clearSearch }}" style="margin-left:auto;height:30px;padding:0 13px;border:1px solid #c8cfc7;border-radius:2px;background:transparent;cursor:pointer;font:inherit;font-size:11px;color:#4a5550;white-space:nowrap" style-hover="background:#e6e9e2">検索をやめる ×</button>
           </div>
-          <div style="display:flex;flex-direction:column;gap:7px">
-            <sc-for list="{{ results }}" as="r" hint-placeholder-count="4">
-              <div style="display:flex;align-items:center;flex-wrap:wrap;gap:14px;padding:13px 15px;background:#fbfcfa;border:1px solid #dde2da;border-radius:3px">
-                <div style="flex:1 1 300px;min-width:0">
-                  <div style="display:flex;align-items:baseline;gap:9px">
-                    <b style="font-size:13.5px;font-weight:500">{{ r.name }}</b>
-                    <span style="font-size:10px;color:#77837a">{{ r.count }}名</span>
-                  </div>
-                  <div style="font-size:11.5px;color:#5d6a61;margin-top:4px">{{ r.desc }}</div>
-                  <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:7px">
-                    <sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="3">
-                      <span style="font-size:10px;padding:2px 7px;border-radius:2px;background:#e8ede9;color:#3d4a41">{{ t }}</span>
-                    </sc-for>
-                  </div>
+          <sc-for list="{{ results }}" as="r" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:start;padding:16px 2px;border-bottom:1px solid #e2e5de">
+              <div style="min-width:0">
+                <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+                  <b style="font-size:16px;font-weight:500;letter-spacing:.02em">{{ r.name }}</b>
+                  <span style="font-family:'Zen Old Mincho',serif;font-size:12px;color:#7d867f">{{ r.count }}名</span>
+                  <span style="font-size:10.5px;color:#98a099">{{ r.divisionShort }}</span>
                 </div>
-                <div style="text-align:right;white-space:nowrap">
-                  <div style="font-size:12px;font-weight:500">{{ r.where }}</div>
-                  <div style="font-size:10.5px;color:#77837a;margin-top:3px">{{ r.floorRoom }}</div>
-                  <sc-if value="{{ r.hasContact }}" hint-placeholder-val="{{ false }}">
-                    <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:#3d4a41;margin-top:4px">{{ r.tel }}</div>
-                  </sc-if>
+                <div style="font-size:12px;color:#5b655e;margin-top:5px;line-height:1.7">{{ r.desc }}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">
+                  <sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="3">
+                    <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:#e4e8e1;color:#4a5550;white-space:nowrap;flex:0 0 auto">{{ t }}</span>
+                  </sc-for>
                 </div>
-                <button type="button" onClick="{{ r.onGuide }}" style="{{ r.btn }}">案内を見る</button>
               </div>
-            </sc-for>
-          </div>
+              <div style="text-align:right;white-space:nowrap">
+                <sc-if value="{{ r.hasContact }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;letter-spacing:.01em">{{ r.tel }}</div>
+                </sc-if>
+                <div style="font-size:11.5px;color:#5b655e;margin-top:4px">{{ r.placeOne }}</div>
+                <button type="button" onClick="{{ r.onGuide }}" style="{{ r.ghostBtn }}">階層案内へ</button>
+              </div>
+            </div>
+          </sc-for>
         </div>
       </sc-if>
 
       <sc-if value="{{ showBuilding }}" hint-placeholder-val="{{ true }}">
         <div>
-          <div style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:16px;padding-bottom:16px;border-bottom:1px solid #d3d9d1">
-            <div style="flex:1 1 260px">
-              <div style="display:flex;align-items:center;gap:10px">
-                <span style="{{ codeChip }}">{{ sel.code }}</span>
-                <span style="font-size:10px;letter-spacing:.14em;color:#8a958d">MAP No.{{ sel.no }}　{{ sel.roman }}</span>
-              </div>
-              <h2 style="margin:9px 0 0;font-size:25px;font-weight:500;letter-spacing:.03em">{{ sel.name }}</h2>
-              <div style="margin-top:7px;font-size:12.5px;color:#5d6a61;line-height:1.7;max-width:600px">{{ sel.note }}</div>
-              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:11px">
-                <sc-for list="{{ orgs }}" as="o" hint-placeholder-count="2">
-                  <span style="display:inline-flex;align-items:baseline;gap:7px;padding:4px 9px;border:1px solid #d3d9d1;border-radius:2px;background:#fbfcfa;font-size:11px;white-space:nowrap">
-                    <span style="font-weight:500">{{ o.name }}</span>
-                    <span style="font-size:10px;color:#77837a">{{ o.meta }}</span>
-                  </span>
-                </sc-for>
-              </div>
-            </div>
-            <div style="display:flex;gap:18px;padding-top:4px;white-space:nowrap">
-              <div style="text-align:right"><div style="font-size:20px;font-weight:500;line-height:1">{{ sel.deptCount }}</div><div style="font-size:9px;letter-spacing:.14em;color:#8a958d;margin-top:4px">部署</div></div>
-              <div style="text-align:right"><div style="font-size:20px;font-weight:500;line-height:1">{{ sel.people }}</div><div style="font-size:9px;letter-spacing:.14em;color:#8a958d;margin-top:4px">名</div></div>
-              <div style="text-align:right"><div style="{{ statAccent }}">{{ sel.pages }}</div><div style="font-size:9px;letter-spacing:.14em;color:#8a958d;margin-top:4px">図鑑公開</div></div>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:baseline;gap:10px;margin:18px 0 11px">
-            <span style="font-size:10px;letter-spacing:.16em;color:#8a958d;white-space:nowrap">FLOOR GUIDE ／ 階層案内</span>
-            <span style="flex:1;height:1px;background:#dde2da"></span>
-            <span style="font-size:10px;color:#8a958d;white-space:nowrap">クリックで窓口の詳細</span>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:1px;background:#dde2da;border:1px solid #dde2da;border-radius:4px;overflow:hidden">
-            <sc-for list="{{ floors }}" as="f" hint-placeholder-count="4">
-              <div style="display:grid;grid-template-columns:96px minmax(0,1fr);background:#fbfcfa">
-                <div style="{{ f.gutter }}">
-                  <span style="font-size:13.5px;font-weight:500;letter-spacing:.04em">{{ f.label }}</span>
-                  <span style="font-size:9.5px;color:#8a958d;margin-top:4px">{{ f.count }}</span>
+          <div style="padding:28px 30px 22px;background:#ffffff;border-bottom:1px solid #dcdfd8">
+            <div style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:26px">
+              <div style="flex:1 1 300px;min-width:0">
+                <div style="display:flex;align-items:center;gap:11px">
+                  <span style="{{ codeChip }}">{{ sel.code }}</span>
+                  <span style="font-size:9.5px;letter-spacing:.18em;color:#98a099">MAP No.{{ sel.no }}　{{ sel.roman }}</span>
                 </div>
-                <div style="padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px">
+                <h2 style="margin:12px 0 0;font-family:'Zen Old Mincho',serif;font-size:42px;font-weight:500;letter-spacing:.03em;line-height:1.15">{{ sel.name }}</h2>
+                <div style="margin-top:10px;font-size:13px;color:#5b655e;line-height:1.85;max-width:620px;text-wrap:pretty">{{ sel.note }}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:14px">
+                  <sc-for list="{{ orgs }}" as="o" hint-placeholder-count="2">
+                    <span style="display:inline-flex;align-items:baseline;gap:7px;padding:4px 10px;border-radius:2px;background:#eef1ea;font-size:11px;white-space:nowrap;flex:0 0 auto">
+                      <span style="font-weight:500">{{ o.name }}</span>
+                      <span style="font-size:10px;color:#7d867f">{{ o.meta }}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex;white-space:nowrap">
+                <div style="text-align:right;padding:0 18px"><div style="font-family:'Zen Old Mincho',serif;font-size:32px;font-weight:500;line-height:1">{{ sel.deptCount }}</div><div style="font-size:9px;letter-spacing:.16em;color:#98a099;margin-top:6px">部署</div></div>
+                <div style="text-align:right;padding:0 18px;border-left:1px solid #e2e5de"><div style="font-family:'Zen Old Mincho',serif;font-size:32px;font-weight:500;line-height:1">{{ sel.people }}</div><div style="font-size:9px;letter-spacing:.16em;color:#98a099;margin-top:6px">名</div></div>
+                <div style="text-align:right;padding:0 0 0 18px;border-left:1px solid #e2e5de"><div style="{{ statAccent }}">{{ sel.pages }}</div><div style="font-size:9px;letter-spacing:.16em;color:#98a099;margin-top:6px">図鑑公開</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:22px 30px 0;display:flex;align-items:baseline;gap:12px">
+            <span style="font-family:'Zen Old Mincho',serif;font-size:15px;letter-spacing:.1em">階層案内</span>
+            <span style="font-size:9px;letter-spacing:.18em;color:#98a099">FLOOR GUIDE</span>
+            <span style="margin-left:auto;font-size:10px;color:#98a099;white-space:nowrap">部署名をクリックで窓口の詳細</span>
+          </div>
+
+          <div style="margin:12px 30px 0;background:#ffffff;border:1px solid #dcdfd8">
+            <sc-for list="{{ floors }}" as="f" hint-placeholder-count="4">
+              <div style="display:grid;grid-template-columns:92px minmax(0,1fr);border-bottom:1px solid #dcdfd8">
+                <div style="padding:16px 12px;background:#f7f8f4;border-right:1px solid #e2e5de">
+                  <div style="font-family:'Zen Old Mincho',serif;font-size:21px;font-weight:500;line-height:1.1;letter-spacing:.02em">{{ f.label }}</div>
+                  <div style="font-size:9.5px;color:#98a099;margin-top:5px">{{ f.count }}</div>
+                </div>
+                <div>
                   <sc-for list="{{ f.items }}" as="d" hint-placeholder-count="3">
-                    <div style="{{ d.card }}">
-                      <button type="button" onClick="{{ d.onToggle }}" style="display:block;width:100%;text-align:left;border:0;background:transparent;padding:0;cursor:pointer;font:inherit;color:inherit">
-                        <span style="display:flex;align-items:baseline;gap:8px">
-                          <b style="font-size:13.5px;font-weight:500;letter-spacing:.01em">{{ d.name }}</b>
-                          <span style="font-size:10px;color:#77837a;white-space:nowrap">{{ d.count }}名</span>
-                          <span style="{{ d.caret }}">{{ d.caretGlyph }}</span>
+                    <div style="{{ d.rowWrap }}">
+                      <button type="button" onClick="{{ d.onToggle }}" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start;width:100%;text-align:left;border:0;background:transparent;padding:14px 16px;cursor:pointer;font:inherit;color:inherit" style-hover="background:#f8faf6">
+                        <span style="min-width:0">
+                          <span style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+                            <b style="font-size:15.5px;font-weight:500;letter-spacing:.02em">{{ d.name }}</b>
+                            <span style="font-family:'Zen Old Mincho',serif;font-size:12px;color:#7d867f;white-space:nowrap">{{ d.count }}名</span>
+                          </span>
+                          <span style="display:block;font-size:12px;color:#5b655e;line-height:1.7;margin-top:5px">{{ d.desc }}</span>
+                          <span style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">
+                            <sc-for list="{{ d.tags }}" as="t" hint-placeholder-count="3">
+                              <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:#e4e8e1;color:#4a5550;white-space:nowrap;flex:0 0 auto">{{ t }}</span>
+                            </sc-for>
+                          </span>
                         </span>
-                        <span style="display:block;font-size:11.5px;color:#5d6a61;line-height:1.6;margin-top:5px">{{ d.desc }}</span>
-                        <span style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">
-                          <sc-for list="{{ d.tags }}" as="t" hint-placeholder-count="3">
-                            <span style="font-size:10px;padding:2px 7px;border-radius:2px;background:#e8ede9;color:#3d4a41">{{ t }}</span>
-                          </sc-for>
-                        </span>
+                        <span style="{{ d.caret }}">{{ d.caretGlyph }}</span>
                       </button>
                       <div style="{{ d.bodyStyle }}">
-                        <div style="display:grid;grid-template-columns:58px 1fr;gap:6px 10px;font-size:11px;line-height:1.6">
-                          <span style="color:#8a958d">場所</span><span>{{ d.placeLine }}</span>
-                          <span style="color:#8a958d">相談例</span><span style="color:#3d4a41;line-height:1.75">{{ d.allKeywords }}</span>
-                          <sc-if value="{{ d.hasWindow }}" hint-placeholder-val="{{ false }}">
-                            <span style="color:#8a958d">公式窓口名</span><span>{{ d.cwindow }}</span>
-                          </sc-if>
-                          <sc-if value="{{ d.hasPlace }}" hint-placeholder-val="{{ false }}">
-                            <span style="color:#8a958d">公式表記</span><span>{{ d.cplace }}</span>
-                          </sc-if>
-                          <span style="color:#8a958d">電話</span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;letter-spacing:.02em">{{ d.tel }}</span>
-                          <sc-if value="{{ d.hasEmail }}" hint-placeholder-val="{{ false }}">
-                            <span style="color:#8a958d">メール</span><span><a href="{{ d.mailto }}" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px">{{ d.email }}</a></span>
-                          </sc-if>
-                          <sc-if value="{{ d.hasFax }}" hint-placeholder-val="{{ false }}">
-                            <span style="color:#8a958d">FAX</span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px">{{ d.fax }}</span>
-                          </sc-if>
-                          <sc-if value="{{ d.hasHours }}" hint-placeholder-val="{{ false }}">
-                            <span style="color:#8a958d">受付</span><span>{{ d.hours }}</span>
-                          </sc-if>
-                          <sc-if value="{{ d.hasNote }}" hint-placeholder-val="{{ false }}">
-                            <span style="color:#8a958d">備考</span><span style="color:#5d6a61">{{ d.cnote }}</span>
-                          </sc-if>
+                        <div style="display:flex;flex-wrap:wrap;gap:26px;align-items:flex-start">
+                          <div style="flex:0 0 auto">
+                            <div style="font-size:9px;letter-spacing:.18em;color:#98a099;margin-bottom:5px">CONTACT</div>
+                            <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:19px;letter-spacing:.01em;line-height:1.2">{{ d.tel }}</div>
+                            <sc-if value="{{ d.hasEmail }}" hint-placeholder-val="{{ false }}">
+                              <div style="margin-top:5px"><a href="{{ d.mailto }}" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;word-break:break-all">{{ d.email }}</a></div>
+                            </sc-if>
+                            <sc-if value="{{ d.hasFax }}" hint-placeholder-val="{{ false }}">
+                              <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:#7d867f;margin-top:3px">FAX {{ d.fax }}</div>
+                            </sc-if>
+                          </div>
+                          <div style="flex:1 1 260px;min-width:0">
+                            <div style="display:grid;grid-template-columns:52px minmax(0,1fr);gap:5px 12px;font-size:11.5px;line-height:1.7">
+                              <span style="color:#98a099">場所</span><span>{{ d.placeOne }}</span>
+                              <sc-if value="{{ d.hasWindow }}" hint-placeholder-val="{{ false }}">
+                                <span style="color:#98a099">窓口名</span><span>{{ d.cwindow }}</span>
+                              </sc-if>
+                              <sc-if value="{{ d.hasHours }}" hint-placeholder-val="{{ false }}">
+                                <span style="color:#98a099">受付</span><span>{{ d.hours }}</span>
+                              </sc-if>
+                              <sc-if value="{{ d.hasNote }}" hint-placeholder-val="{{ false }}">
+                                <span style="color:#98a099">備考</span><span style="color:#5b655e">{{ d.cnote }}</span>
+                              </sc-if>
+                            </div>
+                          </div>
                         </div>
+                        <div style="margin-top:12px;font-size:10.5px;color:#8b948d;line-height:1.75">相談例　{{ d.allKeywords }}</div>
                         <sc-if value="{{ d.hasLabs }}" hint-placeholder-val="{{ false }}">
-                          <div style="margin-top:12px;padding-top:11px;border-top:1px dashed #d3d9d1">
-                            <div style="font-size:9.5px;letter-spacing:.14em;color:#8a958d;margin-bottom:7px">学科研究室の窓口</div>
-                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:5px 14px">
+                          <div style="margin-top:14px;padding-top:12px;border-top:1px solid #e2e5de">
+                            <div style="font-size:9px;letter-spacing:.18em;color:#98a099;margin-bottom:8px">学科研究室の窓口</div>
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:4px 20px">
                               <sc-for list="{{ d.labs }}" as="l" hint-placeholder-count="6">
-                                <div style="display:flex;align-items:baseline;gap:8px;font-size:11px;line-height:1.55">
-                                  <span style="flex:1;min-width:0">{{ l.name }}</span>
-                                  <span style="color:#77837a;white-space:nowrap">{{ l.place }}</span>
+                                <div style="display:flex;align-items:baseline;gap:9px;font-size:11px;line-height:1.6;border-bottom:1px dotted #dfe3dc;padding-bottom:2px">
+                                  <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ l.name }}</span>
+                                  <span style="color:#8b948d;white-space:nowrap">{{ l.place }}</span>
                                   <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;white-space:nowrap">{{ l.tel }}</span>
                                 </div>
                               </sc-for>
                             </div>
-                            <div style="font-size:10px;color:#8a958d;margin-top:8px;line-height:1.7">{{ d.labsNote }}</div>
+                            <div style="font-size:10px;color:#8b948d;margin-top:9px;line-height:1.7">{{ d.labsNote }}</div>
                           </div>
                         </sc-if>
-                        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:11px">
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px">
                           <sc-if value="{{ d.hasUrl }}" hint-placeholder-val="{{ true }}">
                             <a href="{{ d.url }}" target="_blank" rel="noopener" style="{{ d.linkBtn }}">部署図鑑を開く ↗</a>
                           </sc-if>
                           <sc-if value="{{ d.noUrl }}" hint-placeholder-val="{{ false }}">
-                            <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1px dashed #c3cbc4;border-radius:3px;font-size:11px;color:#8a958d">図鑑ページ 準備中</span>
+                            <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1px dashed #c8cfc7;border-radius:2px;font-size:11px;color:#98a099">図鑑ページ 準備中</span>
                           </sc-if>
-                          <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1px dashed #c3cbc4;border-radius:3px;font-size:11px;color:#a3aca4">関連リンク 未登録</span>
                         </div>
                       </div>
                     </div>
@@ -237,137 +258,159 @@ a:hover{color:#1d4d40}
               </div>
             </sc-for>
           </div>
-          <div style="margin-top:16px;padding:13px 15px;border:1px solid #dde2da;border-radius:4px;background:#f4f7f2">
-            <div style="font-size:9.5px;letter-spacing:.14em;color:#8a958d;margin-bottom:8px">どこに聞けばよいか分からないとき</div>
-            <div style="display:flex;flex-direction:column;gap:7px">
+
+          <div style="margin:20px 30px 0;padding:15px 18px;background:#ffffff;border-left:2px solid #14171a">
+            <div style="font-family:'Zen Old Mincho',serif;font-size:13px;letter-spacing:.08em;margin-bottom:10px">どこに聞けばよいか分からないとき</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
               <sc-for list="{{ generalItems }}" as="g" hint-placeholder-count="3">
-                <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;font-size:11.5px">
-                  <span style="font-weight:500">{{ g.name }}</span>
-                  <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:#3d4a41">{{ g.line }}</span>
+                <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:12px">
+                  <span style="font-size:12px;font-weight:500;min-width:150px">{{ g.name }}</span>
+                  <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:#14171a">{{ g.line }}</span>
                   <sc-if value="{{ g.hasNote }}" hint-placeholder-val="{{ true }}">
-                    <span style="font-size:10.5px;color:#77837a">{{ g.note }}</span>
+                    <span style="font-size:10.5px;color:#8b948d">{{ g.note }}</span>
                   </sc-if>
                 </div>
               </sc-for>
             </div>
           </div>
-          <div style="margin-top:11px;font-size:10px;color:#8a958d;line-height:1.8">電話・受付時間は{{ contactSource }}／掲載のない部署は「未登録」。（仮）表記の所在地は最終確認中。</div>
+
+          <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+            <div style="margin:20px 30px 0">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-family:'Zen Old Mincho',serif;font-size:14px;letter-spacing:.1em">位置</span>
+                <div style="margin-left:auto;display:flex;border:1px solid #dcdfd8;border-radius:2px;overflow:hidden">
+                  <button type="button" onClick="{{ setBird }}" style="{{ birdBtn }}">鳥瞰図</button>
+                  <button type="button" onClick="{{ setPlan }}" style="{{ planBtn }}">案内図</button>
+                </div>
+              </div>
+              <div style="position:relative;width:100%;height:240px;overflow:hidden;border:1px solid #dcdfd8;background:#ffffff">
+                <img src="./assets/map-1.jpg" alt="鳥瞰図" style="{{ cropBird }}">
+                <img src="./assets/map-2.png" alt="案内図" style="{{ cropPlan }}">
+                <div style="{{ ringStyle }}"></div>
+              </div>
+              <div style="font-size:10px;color:#8b948d;margin-top:7px">{{ cropCaption }}</div>
+            </div>
+          </sc-if>
+
+          <div style="margin:16px 30px 40px;font-size:10px;color:#8b948d;line-height:1.9">電話・受付時間は{{ contactSource }}／掲載のない部署は「未登録」。（仮）表記の所在地は最終確認中。</div>
         </div>
       </sc-if>
 
       <sc-if value="{{ showTopic }}" hint-placeholder-val="{{ false }}">
         <div>
-          <div style="padding-bottom:16px;border-bottom:1px solid #d3d9d1">
-            <div style="font-size:10px;letter-spacing:.16em;color:#8a958d">こんなときは</div>
-            <h2 style="margin:9px 0 0;font-size:25px;font-weight:500;letter-spacing:.03em">{{ topic.label }}</h2>
-            <div style="margin-top:7px;font-size:12.5px;color:#5d6a61;line-height:1.7">{{ topic.sub }}</div>
+          <div style="padding:28px 30px 22px;background:#ffffff;border-bottom:1px solid #dcdfd8">
+            <div style="font-size:9.5px;letter-spacing:.2em;color:#98a099">こんなときは</div>
+            <h2 style="margin:11px 0 0;font-family:'Zen Old Mincho',serif;font-size:40px;font-weight:500;letter-spacing:.03em;line-height:1.15">{{ topic.label }}</h2>
+            <div style="margin-top:10px;font-size:13px;color:#5b655e;line-height:1.85;max-width:640px">{{ topic.sub }}</div>
           </div>
-          <div style="display:flex;align-items:baseline;gap:10px;margin:18px 0 11px">
-            <span style="font-size:10px;letter-spacing:.16em;color:#8a958d">CONTACT ／ 相談先</span>
-            <span style="flex:1;height:1px;background:#dde2da"></span>
-            <span style="font-size:10px;color:#8a958d">{{ topic.count }}</span>
+
+          <div style="padding:22px 30px 0;display:flex;align-items:baseline;gap:12px">
+            <span style="font-family:'Zen Old Mincho',serif;font-size:15px;letter-spacing:.1em">相談先</span>
+            <span style="font-size:9px;letter-spacing:.18em;color:#98a099">CONTACT</span>
+            <span style="margin-left:auto;font-size:10px;color:#98a099">{{ topic.count }}</span>
           </div>
-          <div style="display:flex;flex-direction:column;gap:9px">
+
+          <div style="margin:12px 30px 0;background:#ffffff;border:1px solid #dcdfd8">
             <sc-for list="{{ topicDepts }}" as="d" hint-placeholder-count="3">
-              <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:16px;padding:16px 18px;background:#fbfcfa;border:1px solid #dde2da;border-radius:4px">
-                <div style="flex:1 1 320px;min-width:0">
-                  <div style="display:flex;align-items:baseline;gap:9px">
-                    <b style="font-size:15px;font-weight:500">{{ d.name }}</b>
-                    <span style="font-size:10.5px;color:#77837a">{{ d.count }}名</span>
-                    <span style="font-size:10.5px;color:#8a958d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.divisionShort }}</span>
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:start;padding:18px 20px;border-bottom:1px solid #e6e9e2">
+                <div style="min-width:0">
+                  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+                    <b style="font-size:18px;font-weight:500;letter-spacing:.02em">{{ d.name }}</b>
+                    <span style="font-family:'Zen Old Mincho',serif;font-size:12px;color:#7d867f">{{ d.count }}名</span>
+                    <span style="font-size:10.5px;color:#98a099">{{ d.divisionShort }}</span>
                   </div>
-                  <div style="font-size:12px;color:#5d6a61;margin-top:5px;line-height:1.65">{{ d.desc }}</div>
-                  <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:9px">
+                  <div style="font-size:12.5px;color:#5b655e;margin-top:6px;line-height:1.75">{{ d.desc }}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:9px">
                     <sc-for list="{{ d.tags }}" as="t" hint-placeholder-count="3">
-                      <span style="font-size:10px;padding:2px 7px;border-radius:2px;background:#e8ede9;color:#3d4a41">{{ t }}</span>
+                      <span style="font-size:10px;padding:2px 8px;border-radius:2px;background:#e4e8e1;color:#4a5550;white-space:nowrap;flex:0 0 auto">{{ t }}</span>
                     </sc-for>
                   </div>
-                </div>
-                <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-                  <div style="text-align:right">
-                    <div style="font-size:13px;font-weight:500">{{ d.where }}</div>
-                    <div style="font-size:10.5px;color:#77837a;margin-top:3px">{{ d.floorRoom }}</div>
-                  </div>
-                  <sc-if value="{{ d.hasContact }}" hint-placeholder-val="{{ false }}">
-                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:7px 10px;border:1px solid #dde2da;border-radius:3px;background:#f4f7f2;text-align:right">
-                      <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:.02em">{{ d.tel }}</span>
-                      <sc-if value="{{ d.hasEmail }}" hint-placeholder-val="{{ false }}">
-                        <a href="{{ d.mailto }}" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;word-break:break-all;line-height:1.45;max-width:220px">{{ d.email }}</a>
-                      </sc-if>
-                      <sc-if value="{{ d.hasWindow }}" hint-placeholder-val="{{ false }}">
-                        <span style="font-size:9.5px;color:#8a958d">{{ d.cwindow }}</span>
-                      </sc-if>
-                      <sc-if value="{{ d.hasHours }}" hint-placeholder-val="{{ false }}">
-                        <span style="font-size:9.5px;color:#8a958d;max-width:240px;text-align:right;line-height:1.55">{{ d.hours }}</span>
-                      </sc-if>
-                    </div>
+                  <sc-if value="{{ d.hasHours }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:10.5px;color:#8b948d;margin-top:9px;line-height:1.7">受付　{{ d.hours }}</div>
                   </sc-if>
-                  <div style="display:flex;gap:7px">
-                    <button type="button" onClick="{{ d.onGuide }}" style="height:32px;padding:0 12px;border:1px solid #cbd2c8;border-radius:3px;background:#f6f8f4;cursor:pointer;font:inherit;font-size:11px;color:#3d4a41;white-space:nowrap">場所を見る</button>
+                </div>
+                <div style="text-align:right;white-space:nowrap">
+                  <sc-if value="{{ d.hasContact }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:19px;letter-spacing:.01em;line-height:1.2">{{ d.tel }}</div>
+                  </sc-if>
+                  <sc-if value="{{ d.hasEmail }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:4px"><a href="{{ d.mailto }}" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px">{{ d.email }}</a></div>
+                  </sc-if>
+                  <div style="font-size:11.5px;color:#5b655e;margin-top:7px">{{ d.placeOne }}</div>
+                  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:11px">
+                    <button type="button" onClick="{{ d.onGuide }}" style="{{ d.ghostBtn }}">場所を見る</button>
                     <sc-if value="{{ d.hasUrl }}" hint-placeholder-val="{{ true }}">
                       <a href="{{ d.url }}" target="_blank" rel="noopener" style="{{ d.linkBtn }}">部署図鑑 ↗</a>
-                    </sc-if>
-                    <sc-if value="{{ d.noUrl }}" hint-placeholder-val="{{ false }}">
-                      <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1px dashed #c3cbc4;border-radius:3px;font-size:11px;color:#8a958d;white-space:nowrap">図鑑 準備中</span>
                     </sc-if>
                   </div>
                 </div>
               </div>
             </sc-for>
           </div>
-          <div style="margin-top:13px;font-size:10px;color:#8a958d;line-height:1.8">相談内容の分類は部署マスタの説明文をもとにした暫定版です。電話・受付時間は{{ contactSource }}。</div>
+
+          <div style="margin:16px 30px 40px;font-size:10px;color:#8b948d;line-height:1.9">相談内容の分類は部署マスタの説明文をもとにした暫定版です。電話・受付時間は{{ contactSource }}。</div>
         </div>
       </sc-if>
     </main>
 
-    <aside class="cscroll" style="border-left:1px solid #d3d9d1;background:#f1f3ef;padding:18px;overflow-y:auto">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:11px">
-        <span style="font-size:9.5px;letter-spacing:.18em;color:#8a958d">LOCATION</span>
-        <div style="margin-left:auto;display:flex;border:1px solid #d3d9d1;border-radius:3px;overflow:hidden">
-          <button type="button" onClick="{{ setBird }}" style="{{ birdBtn }}">鳥瞰図</button>
-          <button type="button" onClick="{{ setPlan }}" style="{{ planBtn }}">案内図</button>
-        </div>
-      </div>
-
-      <div style="position:relative;width:100%;height:186px;overflow:hidden;border:1px solid #d3d9d1;background:#fbfcfa">
-        <img src="./assets/map-1.jpg" alt="鳥瞰図" style="{{ cropBird }}">
-        <img src="./assets/map-2.png" alt="案内図" style="{{ cropPlan }}">
-        <div style="{{ ringStyle }}"></div>
-      </div>
-      <div style="font-size:10px;color:#8a958d;margin-top:7px;line-height:1.6">{{ cropCaption }}</div>
-
-      <div style="position:relative;width:100%;margin-top:14px;border:1px solid #d3d9d1;background:#fbfcfa;line-height:0">
-        <img src="./assets/map-1.jpg" alt="キャンパス全体図（鳥瞰）" style="{{ ovBird }}">
-        <img src="./assets/map-2.png" alt="キャンパス全体図（案内図）" style="{{ ovPlan }}">
-        <sc-for list="{{ mini }}" as="m" hint-placeholder-count="7">
-          <button type="button" onClick="{{ m.onClick }}" title="{{ m.name }}" style="{{ m.style }}"></button>
-        </sc-for>
-      </div>
-      <div style="font-size:10px;color:#8a958d;margin-top:7px;line-height:1.6">全体図の点をクリックしても建物を切り替えられます。</div>
-
-      <div style="margin-top:18px">
-        <div style="font-size:9.5px;letter-spacing:.18em;color:#8a958d;margin-bottom:9px">FLOOR PLAN</div>
-        <div style="position:relative;width:100%;height:132px;border:1px dashed #c3cbc4;border-radius:3px;background-color:#f7f9f5;background-image:repeating-linear-gradient(135deg,rgba(120,131,122,.13) 0 1px,transparent 1px 7px);display:grid;place-items:center;text-align:center;padding:12px">
-          <div>
-            <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:#6b766e;letter-spacing:.04em">{{ planLabel }}</div>
-            <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9.5px;color:#a3aca4;margin-top:5px">drop floor plan image</div>
+    <sc-if value="{{ asideOpen }}" hint-placeholder-val="{{ true }}">
+      <aside class="cscroll" style="flex:0 0 292px;border-left:1px solid #dcdfd8;background:#eaece6;padding:18px;overflow-y:auto">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <span style="font-family:'Zen Old Mincho',serif;font-size:13px;letter-spacing:.1em">位置</span>
+          <div style="margin-left:auto;display:flex;border:1px solid #dcdfd8;border-radius:2px;overflow:hidden">
+            <button type="button" onClick="{{ setBird }}" style="{{ birdBtn }}">鳥瞰図</button>
+            <button type="button" onClick="{{ setPlan }}" style="{{ planBtn }}">案内図</button>
           </div>
+          <button type="button" onClick="{{ toggleAside }}" title="地図を閉じる" style="width:24px;height:24px;border:1px solid #dcdfd8;border-radius:2px;background:#f2f3ef;cursor:pointer;font:inherit;font-size:11px;color:#5b655e;line-height:1;padding:0" style-hover="background:#e0e3dc">›</button>
         </div>
-      </div>
 
-      <div style="margin-top:18px;padding-top:14px;border-top:1px solid #dde2da;font-size:11px;color:#5d6a61;line-height:1.85">
-        最寄り　京都芸術大学前バス停<br>白川通・東鞍馬口通沿い<br>市営地下鉄 国際会館駅から約20分
-      </div>
-    </aside>
+        <div style="position:relative;width:100%;height:196px;overflow:hidden;border:1px solid #dcdfd8;background:#ffffff">
+          <img src="./assets/map-1.jpg" alt="鳥瞰図" style="{{ cropBird }}">
+          <img src="./assets/map-2.png" alt="案内図" style="{{ cropPlan }}">
+          <div style="{{ ringStyle }}"></div>
+        </div>
+        <div style="font-size:10px;color:#8b948d;margin-top:7px;line-height:1.6">{{ cropCaption }}</div>
+
+        <div style="position:relative;width:100%;margin-top:16px;border:1px solid #dcdfd8;background:#ffffff;line-height:0">
+          <img src="./assets/map-1.jpg" alt="キャンパス全体図（鳥瞰）" style="{{ ovBird }}">
+          <img src="./assets/map-2.png" alt="キャンパス全体図（案内図）" style="{{ ovPlan }}">
+          <sc-for list="{{ mini }}" as="m" hint-placeholder-count="7">
+            <button type="button" onClick="{{ m.onClick }}" title="{{ m.name }}" style="{{ m.style }}"></button>
+          </sc-for>
+        </div>
+        <div style="font-size:10px;color:#8b948d;margin-top:7px;line-height:1.6">全体図の点をクリックしても建物を切り替えられます。</div>
+
+        <div style="margin-top:20px;padding-top:15px;border-top:1px solid #d8dcd4;font-size:11px;color:#5b655e;line-height:1.9">
+          最寄り　京都芸術大学前バス停<br>白川通・東鞍馬口通沿い<br>市営地下鉄 国際会館駅から約20分
+        </div>
+      </aside>
+    </sc-if>
+
+    <sc-if value="{{ asideClosed }}" hint-placeholder-val="{{ false }}">
+      <button type="button" onClick="{{ toggleAside }}" title="地図を開く" style="flex:0 0 38px;border:0;border-left:1px solid #dcdfd8;background:#eaece6;cursor:pointer;font:inherit;color:#4a5550;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:0" style-hover="background:#e0e3dc">
+        <span style="font-size:11px">‹</span>
+        <span style="font-family:'Zen Old Mincho',serif;font-size:13px;letter-spacing:.2em;writing-mode:vertical-rl">位置</span>
+      </button>
+    </sc-if>
   </div>
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;mapDefault&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;鳥瞰図&quot;,&quot;案内図&quot;],&quot;default&quot;:&quot;鳥瞰図&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;表示&quot;},&quot;showKeywordTags&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;表示&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2c6b5b&quot;,&quot;#1f4f6b&quot;,&quot;#6b4a2c&quot;,&quot;#3d4a41&quot;],&quot;default&quot;:&quot;#2c6b5b&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;表示&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;mapDefault&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;鳥瞰図&quot;,&quot;案内図&quot;],&quot;default&quot;:&quot;鳥瞰図&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;表示&quot;},&quot;showKeywordTags&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;表示&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#2c6b5b&quot;,&quot;#1f4f6b&quot;,&quot;#6b4a2c&quot;,&quot;#4a4f57&quot;],&quot;default&quot;:&quot;#2c6b5b&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;表示&quot;}}">
 class Component extends DCLogic {
-  state = { data: window.CAMPUS || null, sel: 'na', mode: 'building', topic: 't0', q: '', open: null, map: null };
+  state = { data: window.CAMPUS || null, sel: 'na', mode: 'building', topic: 't0', q: '', open: null, map: null, big: false, aside: true, vw: (typeof window !== 'undefined' ? window.innerWidth : 1440) };
   componentDidMount() {
     if (!this.state.data) window.addEventListener('campusdata', () => this.setState({ data: window.CAMPUS }), { once: true });
+    this.onResize = () => this.setState({ vw: window.innerWidth });
+    window.addEventListener('resize', this.onResize);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
+  componentDidUpdate() { this.applyScale(); }
+  applyScale() {
+    const el = this.appRef && this.appRef.current;
+    if (!el) return;
+    el.style.zoom = this.state.big ? '1.16' : '';
+    el.style.height = this.state.big ? 'calc(100vh / 1.16)' : '100vh';
   }
   crop(isBird, show, pos) {
     const AR = isBird ? 1.4596 : 0.7217, w = isBird ? 1160 : 760;
@@ -385,90 +428,95 @@ class Component extends DCLogic {
     return parseFloat(f) || 0;
   }
   renderVals() {
-    const D = this.state.data, { sel, mode, topic, q, open } = this.state;
+    if (!this.appRef) this.appRef = React.createRef();
+    const D = this.state.data, { sel, mode, topic, q, open, big, vw } = this.state;
     const accent = this.props.accent || '#2c6b5b';
     const showTags = this.props.showKeywordTags !== false;
     const map = this.state.map || (this.props.mapDefault === '案内図' ? 'plan' : 'bird');
     const bird = map === 'bird';
+    const narrow = vw < 1180;
+    const asideOpen = !narrow && this.state.aside !== false;
     const B = D ? D.buildings : {}, all = D ? D.depts : [], topics = D ? (D.topics || []) : [];
     const depts = all.filter(d => !d.umbrella);
     const b = B[sel] || {}, ids = Object.keys(B);
     const mine = depts.filter(d => d.building === sel);
-    const ql = q.trim().toLowerCase();
     const norm = v => String(v || '').normalize('NFKC').toLowerCase().replace(/[・･\s_\-ー／/（）()「」『』]/g, '');
     const hay = d => norm([d.name, d.desc, d.division, d.location, (d.keywords || []).join(' ')].join(' '));
     const nq = norm(q);
     const found = nq ? depts.filter(d => hay(d).indexOf(nq) >= 0) : [];
     const T = topics.filter(t => t.id === topic)[0] || topics[0] || { label: '', sub: '', depts: [] };
 
-    const linkBtn = { display: 'inline-flex', alignItems: 'center', height: '32px', padding: '0 13px', border: '1px solid ' + accent, borderRadius: '3px', background: accent, color: '#f2f4f0', fontSize: '11px', fontWeight: 500, whiteSpace: 'nowrap' };
-    const slotStyle = { color: '#a3aca4', fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace', fontSize: '10.5px', letterSpacing: '.02em' };
-    const tabStyle = on => ({ height: '46px', border: 0, borderBottom: '2px solid ' + (on ? accent : 'transparent'), background: on ? '#e3ebe5' : 'transparent', color: on ? '#1b2027' : '#6b766e', cursor: 'pointer', fontFamily: 'inherit', fontSize: '12px', fontWeight: on ? 500 : 400, letterSpacing: '.02em' });
+    const linkBtn = { display: 'inline-flex', alignItems: 'center', height: '32px', padding: '0 13px', border: '1px solid ' + accent, borderRadius: '2px', background: accent, color: '#f4f5f1', fontSize: '11px', fontWeight: 500, whiteSpace: 'nowrap' };
+    const ghostBtn = { height: '32px', padding: '0 13px', border: '1px solid #c8cfc7', borderRadius: '2px', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit', fontSize: '11px', color: '#4a5550', whiteSpace: 'nowrap', marginTop: '10px' };
+    const tabStyle = on => ({ height: '46px', border: 0, borderBottom: '2px solid ' + (on ? accent : 'transparent'), background: on ? '#ffffff' : 'transparent', color: on ? '#14171a' : '#6b756e', cursor: 'pointer', fontFamily: 'inherit', fontSize: '12px', fontWeight: on ? 500 : 400, letterSpacing: '.03em' });
 
     const CT = (D && D.contacts) || {};
     const c = d => CT[d.name] || {};
-    const deptCard = d => ({
-      name: d.name, count: d.count, desc: d.desc, tags: showTags ? (d.keywords || []).slice(0, 6) : [],
-      allKeywords: (d.keywords || []).join('・'), url: d.url, hasUrl: !!d.url, noUrl: !d.url,
-      division: d.division, divisionShort: d.division.replace('京都芸術大学 ', ''), linkBtn: linkBtn, slotStyle: slotStyle,
-      where: d.building ? B[d.building].name : '所在地確認中',
-      floorRoom: [d.floor, d.room].filter(Boolean).join('　') || d.division,
-      placeLine: (d.building ? B[d.building].name : '所在地確認中') + (d.floor ? '　' + d.floor : '') + (d.room ? '　' + d.room : ''),
-      hours: c(d).hours || '', hasHours: !!c(d).hours,
-      tel: c(d).tel || '未登録',
-      email: c(d).email || '',
-      fax: c(d).fax || '',
-      cwindow: c(d).window || '',
-      cnote: c(d).note || '',
-      mailto: c(d).email ? 'mailto:' + c(d).email : '',
-      hasContact: !!(c(d).tel || c(d).email),
-      noContact: !(c(d).tel || c(d).email),
-      hasEmail: !!c(d).email, hasFax: !!c(d).fax, hasNote: !!c(d).note,
-      hasWindow: !!c(d).window && c(d).window !== d.name,
-      cplace: c(d).place || '', hasPlace: !!c(d).place,
-      labs: (((D && D.labsFor) || []).indexOf(d.name) >= 0) ? ((D && D.labs) || []) : [],
-      hasLabs: ((D && D.labsFor) || []).indexOf(d.name) >= 0,
-      labsNote: (D && D.labsNote) || ''
-    });
+    const deptCard = d => {
+      const internal = (d.building ? B[d.building].name : '所在地確認中') + (d.floor ? '　' + d.floor : '') + (d.room ? '　' + d.room : '');
+      return {
+        name: d.name, count: d.count, desc: d.desc, tags: showTags ? (d.keywords || []).slice(0, 3) : [],
+        allKeywords: (d.keywords || []).join('・'), url: d.url, hasUrl: !!d.url, noUrl: !d.url,
+        division: d.division, divisionShort: d.division.replace('京都芸術大学 ', ''), linkBtn: linkBtn, ghostBtn: ghostBtn,
+        where: d.building ? B[d.building].name : '所在地確認中',
+        placeOne: c(d).place || internal,
+        hours: c(d).hours || '', hasHours: !!c(d).hours,
+        tel: c(d).tel || '未登録',
+        email: c(d).email || '', fax: c(d).fax || '',
+        cwindow: c(d).window || '', cnote: c(d).note || '',
+        mailto: c(d).email ? 'mailto:' + c(d).email : '',
+        hasContact: !!(c(d).tel || c(d).email),
+        hasEmail: !!c(d).email, hasFax: !!c(d).fax, hasNote: !!c(d).note,
+        hasWindow: !!c(d).window && c(d).window !== d.name,
+        labs: (((D && D.labsFor) || []).indexOf(d.name) >= 0) ? ((D && D.labs) || []) : [],
+        hasLabs: ((D && D.labsFor) || []).indexOf(d.name) >= 0,
+        labsNote: (D && D.labsNote) || ''
+      };
+    };
 
     const floorMap = {};
     mine.forEach(d => { const k = d.floor || '階層確認中'; (floorMap[k] = floorMap[k] || []).push(d); });
     const floors = Object.keys(floorMap)
-      .sort((a, c) => this.rank(c === '階層確認中' ? '' : c) - this.rank(a === '階層確認中' ? '' : a))
+      .sort((a, x) => this.rank(x === '階層確認中' ? '' : x) - this.rank(a === '階層確認中' ? '' : a))
       .map(k => ({
         label: k, count: floorMap[k].length + '部署',
-        gutter: { padding: '13px 12px', borderRight: '1px solid #dde2da', background: '#eef1ec', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' },
-        items: floorMap[k].map(d => {
+        items: floorMap[k].map((d, i) => {
           const on = open === d.name;
           return Object.assign(deptCard(d), {
             onToggle: () => this.setState(s => ({ open: s.open === d.name ? null : d.name })),
-            caret: { marginLeft: 'auto', fontSize: '10px', color: '#8a958d' },
+            caret: { fontSize: '10px', color: on ? accent : '#98a099', whiteSpace: 'nowrap', paddingTop: '4px' },
             caretGlyph: on ? '閉じる ▲' : '詳細 ▼',
-            card: { flex: '1 1 244px', maxWidth: on ? '100%' : '360px', padding: '12px 13px', border: '1px solid ' + (on ? accent : (d.url ? '#cfd8d0' : '#e2e6de')), borderRadius: '3px', background: d.url ? '#ffffff' : '#f7f9f5', transition: 'border-color .15s' },
-            bodyStyle: { display: on ? 'block' : 'none', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #e6eae3' }
+            rowWrap: { borderTop: i === 0 ? 0 : '1px solid #eceee8', background: on ? '#f8faf6' : 'transparent', boxShadow: on ? 'inset 3px 0 0 ' + accent : 'none' },
+            bodyStyle: { display: on ? 'block' : 'none', padding: '2px 18px 20px 19px' }
           });
         })
       }));
 
     return {
+      appRef: this.appRef,
       q, onSearch: e => this.setState({ q: e.target.value }),
       clearSearch: () => this.setState({ q: '' }),
-      searching: ql.length > 0,
-      showBuilding: ql.length === 0 && mode === 'building',
-      showTopic: ql.length === 0 && mode === 'topic',
+      searching: nq.length > 0,
+      showBuilding: nq.length === 0 && mode === 'building',
+      showTopic: nq.length === 0 && mode === 'topic',
       isBuilding: mode === 'building', isTopic: mode === 'topic',
       modeBuilding: () => this.setState({ mode: 'building', q: '' }),
       modeTopic: () => this.setState({ mode: 'topic', q: '' }),
       tabB: tabStyle(mode === 'building'), tabT: tabStyle(mode === 'topic'),
-      codeChip: { display: 'inline-grid', placeItems: 'center', minWidth: '32px', height: '22px', padding: '0 7px', background: '#1b2027', color: '#f2f4f0', fontSize: '11px', letterSpacing: '.1em', borderRadius: '2px' },
-      statAccent: { fontSize: '20px', fontWeight: 500, lineHeight: 1, color: accent },
+      narrow, asideOpen, asideClosed: !narrow && this.state.aside === false,
+      toggleAside: () => this.setState(s => ({ aside: !s.aside })),
+      toggleBig: () => this.setState(s => ({ big: !s.big }), () => this.applyScale()),
+      bigLabel: big ? '文字 標準' : '文字 大',
+      bigBtn: { height: '30px', padding: '0 12px', border: '1px solid ' + (big ? '#4e9c85' : '#2c3237'), borderRadius: '2px', background: big ? 'rgba(78,156,133,.18)' : 'transparent', color: big ? '#9fd3c1' : '#98a099', cursor: 'pointer', fontFamily: 'inherit', fontSize: '10.5px', whiteSpace: 'nowrap' },
+      codeChip: { display: 'inline-grid', placeItems: 'center', minWidth: '34px', height: '23px', padding: '0 8px', background: '#14171a', color: '#f4f5f1', fontSize: '11px', letterSpacing: '.12em', borderRadius: '2px' },
+      statAccent: { fontFamily: "'Zen Old Mincho',serif", fontSize: '32px', fontWeight: 500, lineHeight: 1, color: accent },
       rail: ids.map(id => {
         const bb = B[id], on = id === sel && mode === 'building', n = depts.filter(d => d.building === id);
         return {
           code: bb.code, name: bb.name, meta: n.length + '部署・' + n.reduce((s, d) => s + d.count, 0) + '名',
           onClick: () => this.setState({ sel: id, mode: 'building', q: '', open: null }),
-          style: { display: 'flex', alignItems: 'center', gap: '10px', width: '100%', textAlign: 'left', padding: '9px 16px', border: 0, borderLeft: '3px solid ' + (on ? accent : 'transparent'), background: on ? '#e3ebe5' : 'transparent', cursor: 'pointer', fontFamily: 'inherit', color: '#1b2027' },
-          chip: { display: 'inline-grid', placeItems: 'center', minWidth: '29px', height: '20px', padding: '0 6px', borderRadius: '2px', background: on ? accent : '#dfe4dc', color: on ? '#f2f4f0' : '#5d6a61', fontSize: '10px', letterSpacing: '.08em', flex: '0 0 auto' }
+          style: { display: 'flex', alignItems: 'center', gap: '10px', width: '100%', textAlign: 'left', padding: '10px 16px', border: 0, borderLeft: '3px solid ' + (on ? accent : 'transparent'), background: on ? '#ffffff' : 'transparent', cursor: 'pointer', fontFamily: 'inherit', color: '#14171a' },
+          chip: { display: 'inline-grid', placeItems: 'center', minWidth: '30px', height: '21px', padding: '0 6px', borderRadius: '2px', background: on ? accent : '#dcdfd8', color: on ? '#f4f5f1' : '#5b655e', fontSize: '10px', letterSpacing: '.08em', flex: '0 0 auto' }
         };
       }),
       topicCats: (D ? D.topicCats || [] : []).map(cat => ({
@@ -478,7 +526,7 @@ class Component extends DCLogic {
           return {
             label: t.label, meta: t.depts.length + '部署',
             onClick: () => this.setState({ topic: t.id, mode: 'topic', q: '' }),
-            style: { display: 'flex', alignItems: 'center', gap: '10px', width: '100%', textAlign: 'left', padding: '8px 16px', border: 0, borderLeft: '3px solid ' + (on ? accent : 'transparent'), background: on ? '#e3ebe5' : 'transparent', cursor: 'pointer', fontFamily: 'inherit', color: '#1b2027' }
+            style: { display: 'flex', alignItems: 'center', gap: '8px', width: '100%', textAlign: 'left', padding: '8px 16px', border: 0, borderLeft: '3px solid ' + (on ? accent : 'transparent'), background: on ? '#ffffff' : 'transparent', cursor: 'pointer', fontFamily: 'inherit', color: '#14171a' }
           };
         })
       })),
@@ -497,37 +545,33 @@ class Component extends DCLogic {
       generalItems: ((D && D.general) || []).map(g => ({
         name: g.window,
         line: [g.tel, g.email, g.hours].filter(Boolean).join('　'),
-        note: g.note || '', hasNote: !!g.note,
-        mailto: g.email ? 'mailto:' + g.email : '', hasEmail: !!g.email
+        note: g.note || '', hasNote: !!g.note
       })),
-      totalLine: depts.length + '部署・' + all.reduce((s, d) => s + d.count, 0) + '名／図鑑 ' + depts.filter(d => d.url).length + '件公開',
+      totalLine: depts.length + '部署・' + all.reduce((s, d) => s + d.count, 0) + '名',
       floors,
       cropBird: this.crop(true, bird, b.pos || [50, 50]),
       cropPlan: this.crop(false, !bird, b.pos2 || [50, 50]),
       ovBird: { width: '100%', display: bird ? 'block' : 'none', mixBlendMode: 'multiply' },
       ovPlan: { width: '100%', display: bird ? 'none' : 'block', mixBlendMode: 'multiply' },
       setBird: () => this.setState({ map: 'bird' }), setPlan: () => this.setState({ map: 'plan' }),
-      birdBtn: { height: '26px', padding: '0 10px', border: 0, background: bird ? accent : 'transparent', color: bird ? '#f2f4f0' : '#6b766e', cursor: 'pointer', fontFamily: 'inherit', fontSize: '10.5px', whiteSpace: 'nowrap' },
-      planBtn: { height: '26px', padding: '0 10px', border: 0, background: bird ? 'transparent' : accent, color: bird ? '#6b766e' : '#f2f4f0', cursor: 'pointer', fontFamily: 'inherit', fontSize: '10.5px', whiteSpace: 'nowrap' },
+      birdBtn: { height: '25px', padding: '0 10px', border: 0, background: bird ? accent : 'transparent', color: bird ? '#f4f5f1' : '#6b756e', cursor: 'pointer', fontFamily: 'inherit', fontSize: '10.5px', whiteSpace: 'nowrap' },
+      planBtn: { height: '25px', padding: '0 10px', border: 0, background: bird ? 'transparent' : accent, color: bird ? '#6b756e' : '#f4f5f1', cursor: 'pointer', fontFamily: 'inherit', fontSize: '10.5px', whiteSpace: 'nowrap' },
       cropCaption: (bird ? '公式鳥瞰図' : '公式案内図') + '　' + (b.name || '') + ' 周辺',
-      ringStyle: { position: 'absolute', left: '50%', top: '50%', width: '34px', height: '34px', margin: '-17px 0 0 -17px', border: '2px solid ' + accent, borderRadius: '50%', boxShadow: '0 0 0 6px rgba(251,252,250,.55)' },
+      ringStyle: { position: 'absolute', left: '50%', top: '50%', width: '34px', height: '34px', margin: '-17px 0 0 -17px', border: '2px solid ' + accent, borderRadius: '50%', boxShadow: '0 0 0 6px rgba(255,255,255,.5)' },
       mini: ids.map(id => {
         const bb = B[id], on = id === sel, p = (bird ? bb.pos : bb.pos2);
         return {
           name: bb.name, onClick: () => this.setState({ sel: id, mode: 'building', q: '', open: null }),
-          style: { position: 'absolute', left: p[0] + '%', top: p[1] + '%', transform: 'translate(-50%,-50%)', width: on ? '13px' : '9px', height: on ? '13px' : '9px', padding: 0, borderRadius: '50%', border: '1.5px solid #fbfcfa', background: on ? accent : 'rgba(60,72,64,.45)', cursor: 'pointer', boxShadow: on ? '0 0 0 3px rgba(44,107,91,.25)' : 'none', transition: 'all .2s' }
+          style: { position: 'absolute', left: p[0] + '%', top: p[1] + '%', transform: 'translate(-50%,-50%)', width: on ? '13px' : '9px', height: on ? '13px' : '9px', padding: 0, borderRadius: '50%', border: '1.5px solid #ffffff', background: on ? accent : 'rgba(50,60,54,.5)', cursor: 'pointer', boxShadow: on ? '0 0 0 3px rgba(44,107,91,.25)' : 'none', transition: 'all .2s' }
         };
       }),
-      planLabel: (b.name || '') + '　フロア図',
       results: found.map(d => Object.assign(deptCard(d), {
-        btn: { height: '34px', padding: '0 13px', border: '1px solid ' + accent, borderRadius: '3px', background: accent, color: '#f2f4f0', cursor: 'pointer', fontFamily: 'inherit', fontSize: '11.5px', whiteSpace: 'nowrap' },
         onGuide: () => { if (d.building) this.setState({ sel: d.building, mode: 'building', q: '', open: d.name }); }
       })),
       resultCount: found.length + '件'
     };
   }
 }
-
 </script>
 </body>
 </html>
