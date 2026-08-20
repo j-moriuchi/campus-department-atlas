@@ -4,7 +4,7 @@
 公式キャンパスマップ（鳥瞰図・案内図）と部署マスタを重ねて、**建物から** と **相談内容から** の
 2通りで目的の窓口にたどりつけます。
 
-👉 公開URL: https://<ユーザー名>.github.io/<リポジトリ名>/
+👉 公開URL: https://j-moriuchi.github.io/campus-department-atlas/
 
 ## できること
 
